@@ -40,7 +40,7 @@ const SubjectsList = () => {
             {
                 id: 'name',
                 accessorKey: 'name',
-                Size: 200,
+                size: 200,
                 header: () => <p className='column-title'>Name</p>,
                 cell: ({getValue}) => <span className='text-foreground'>{getValue<string>()}</span>,
                 filterFn: 'includesString'
@@ -48,7 +48,7 @@ const SubjectsList = () => {
             {
                 id: 'department',
                 accessorKey: 'department',
-                Size: 150,
+                size: 150,
                 header: () => <p className='column-title'>Department</p>,
                 cell: ({getValue}) => <Badge variant='secondary'>{getValue<string>()}</Badge>
 
@@ -86,7 +86,7 @@ const SubjectsList = () => {
                         <Input
                             type='text'
                             placeholder='Search by name...'
-                            className='pl-10 wl=full'
+                            className='pl-10 w-full'
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
