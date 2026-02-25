@@ -5,7 +5,7 @@ import {Search} from "lucide-react";
 import {useMemo, useState} from "react";
 import {Input} from "@/components/ui/input.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {DEPARTMENTS_OPTIONS} from "@/constants";
+import {DEPARTMENT_OPTIONS} from "@/constants";
 import {CreateButton} from "@/components/refine-ui/buttons/create.tsx";
 import {DataTable} from "@/components/refine-ui/data-table/data-table.tsx";
 import {useTable} from "@refinedev/react-table";
@@ -19,16 +19,18 @@ const SubjectsList = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedDepartments, setSelectedDepartments] = useState('all');
 
-    const departmentFilters = selectedDepartments === 'all' ? [] : [
+    const departmentFilters = useMemo(() => selectedDepartments === 'all' ? [] : [
         {
-        field: 'department', operator: 'eq' as const, value: selectedDepartments
-        }];
+            field: 'department', operator: 'eq' as const, value: selectedDepartments
+        }], [selectedDepartments]);
 
-    const searchFilters = searchQuery ? [{
+    const searchFilters = useMemo(() => searchQuery ? [{
         field: 'name', operator: 'contains' as const, value: searchQuery
-    }] : [];
+    }] : [], [searchQuery]);
 
-    const sujectTable = useTable<Subject>({
+    const permanentFilters = useMemo(() => [...departmentFilters, ...searchFilters], [departmentFilters, searchFilters]);
+
+    const subjectTable = useTable<Subject>({
         columns: useMemo<ColumnDef<Subject>[]>(() => [
             {
                 id: 'code',
@@ -47,7 +49,7 @@ const SubjectsList = () => {
             },
             {
                 id: 'department',
-                accessorKey: 'department',
+                accessorKey: 'department.name',
                 size: 150,
                 header: () => <p className='column-title'>Department</p>,
                 cell: ({getValue}) => <Badge variant='secondary'>{getValue<string>()}</Badge>
@@ -58,31 +60,33 @@ const SubjectsList = () => {
                 accessorKey: 'description',
                 size: 300,
                 header: () => <p className='column-title'>Description</p>,
-                cell: ({getValue}) => <span className='truncate line-clamp-2' >{getValue<string>()}</span>
+                cell: ({getValue}) => <span className='truncate line-clamp-2'>{getValue<string>()}</span>
             }
         ], []),
         refineCoreProps: {
             resource: 'subjects',
             pagination: {pageSize: 10, mode: "server"},
             filters: {
-                permanent: [...departmentFilters, ...searchFilters]
+                permanent: permanentFilters
             },
-            sorters: { initial: [
-                    { field: 'id', order: 'desc'}
-                ] }
+            sorters: {
+                initial: [
+                    {field: 'id', order: 'desc'}
+                ]
+            }
         }
     });
 
 
     return (
         <ListView>
-            <Breadcrumb />
-                <h1 className='page-title'>Subjects</h1>
+            <Breadcrumb/>
+            <h1 className='page-title'>Subjects</h1>
             <div className='intro-row'>
                 <p>Quick access to essential metrics and management tools</p>
                 <div className='actions-row'>
                     <div className='search-field'>
-                        <Search className='search-icon' />
+                        <Search className='search-icon'/>
                         <Input
                             type='text'
                             placeholder='Search by name...'
@@ -94,25 +98,25 @@ const SubjectsList = () => {
                     <div className='flex gap-2 w-full sm:w-auto'>
                         <Select value={selectedDepartments} onValueChange={setSelectedDepartments}>
                             <SelectTrigger>
-                                <SelectValue placeholder='Filter by department' />
+                                <SelectValue placeholder='Filter by department'/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value='all'>
                                     All Departments
                                 </SelectItem>
-                                {DEPARTMENTS_OPTIONS.map(department => (
+                                {DEPARTMENT_OPTIONS.map(department => (
                                     <SelectItem key={department.value} value={department.value}>
                                         {department.label}
                                     </SelectItem>
 
-                                    ))}
+                                ))}
                             </SelectContent>
                         </Select>
                         <CreateButton/>
                     </div>
                 </div>
             </div>
-            <DataTable table={sujectTable} />
+            <DataTable table={subjectTable}/>
         </ListView>
     )
 }

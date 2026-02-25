@@ -1,21 +1,34 @@
-import {BaseRecord, DataProvider, GetListResponse, GetListParams} from "@refinedev/core";
-import { MOCK_SUBJECTS } from "../constants/index.ts";
+import {createDataProvider, CreateDataProviderOptions} from "@refinedev/rest";
+import {BACKEND_BASE_URL} from "@/constants";
+import {ListResponse} from "@/types";
 
-export const dataProvider: DataProvider = {
-  getList: async <TData extends BaseRecord = BaseRecord>({resource}: GetListParams):
-  Promise<GetListResponse<TData>> => {
-    if(resource !== 'subjects') return { data: [] as TData[], total: 0};
+const options: CreateDataProviderOptions = {
+    getList: {
+        getEndpoint: ({resource}) => resource,
 
-    return {
-      data: MOCK_SUBJECTS as unknown as TData[],
-      total: MOCK_SUBJECTS.length,
+        mapResponse: async (response) => {
+            try {
+                const payload = await response.json() as ListResponse<any>;
+                if (Array.isArray(payload)) return payload;
+                return payload?.data ?? [];
+            } catch (error) {
+                console.error("Error mapping response:", error);
+                return [];
+            }
+        },
+
+        getTotalCount: async (response) => {
+            try {
+                const payload = await response.json() as ListResponse<any>;
+                return payload?.pagination?.total ?? payload?.data?.length ?? (Array.isArray(payload) ? (payload as any).length : 0);
+            } catch (error) {
+                console.error("Error getting total count:", error);
+                return 0;
+            }
+        }
     }
-  },
-
-  getOne: async () => {throw new Error('This function is not present in mock')},
-  create: async () => {throw new Error('This function is not present in mock')},
-  update: async () => {throw new Error('This function is not present in mock')},
-  deleteOne: async () => {throw new Error('This function is not present in mock')},
-
-  getApiUrl: () => '',
 }
+
+const {dataProvider} = createDataProvider(BACKEND_BASE_URL, options);
+
+export {dataProvider};
