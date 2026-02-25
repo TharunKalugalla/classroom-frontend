@@ -1,16 +1,16 @@
-import { GitHubBanner, Refine, WelcomePage } from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import {GitHubBanner, Refine, WelcomePage} from "@refinedev/core";
+import {DevtoolsPanel, DevtoolsProvider} from "@refinedev/devtools";
+import {RefineKbar, RefineKbarProvider} from "@refinedev/kbar";
 
 import routerProvider, {
-  DocumentTitleHandler,
-  UnsavedChangesNotifier,
+    DocumentTitleHandler,
+    UnsavedChangesNotifier,
 } from "@refinedev/react-router";
 import {BrowserRouter, Outlet, Route, Routes} from "react-router";
 import "./App.css";
-import { Toaster } from "./components/refine-ui/notification/toaster";
-import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
-import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
+import {Toaster} from "./components/refine-ui/notification/toaster";
+import {useNotificationProvider} from "./components/refine-ui/notification/use-notification-provider";
+import {ThemeProvider} from "./components/refine-ui/theme/theme-provider";
 import Dashboard from "@/pages/dashboard.tsx";
 import {BookOpenIcon, Home} from "lucide-react";
 import {Layout} from "@/components/refine-ui/layout/layout.tsx";
@@ -19,57 +19,57 @@ import SubjectsCreate from "@/pages/subjects/create.tsx";
 import {dataProvider} from "@/providers/data.ts";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <RefineKbarProvider>
-        <ThemeProvider>
-          <DevtoolsProvider>
-            <Refine
-              dataProvider={dataProvider}
-              notificationProvider={useNotificationProvider()}
-              routerProvider={routerProvider}
-              options={{
-                syncWithLocation: true,
-                warnWhenUnsavedChanges: true,
-                projectId: "UJpDoS-4wx89P-txwrBq",
-              }}
-              resources={[{
-                  name: 'Dashboard',
-                  list: '/',
-                  meta: {lable: 'Home', icon: <Home />}
-              },
-                  {
-                      name:'subjects',
-                      list: '/subjects',
-                      create: '/subjects/create',
-                      meta: {lable: 'Subjects', icon: <BookOpenIcon /> }
-                  }
-              ]}
-            >
-              <Routes>
-                 <Route element={
-                     <Layout>
-                         <Outlet />
-                     </Layout>
-                 }>
-                     <Route path="/" element={<Dashboard />} />
-                     <Route path='/subjects'>
-                         <Route index element={<SubjectsList />} />
-                         <Route path='create' element={<SubjectsCreate />}/>
-                     </Route>
-                 </Route>
-              </Routes>
-              <Toaster />
-              <RefineKbar />
-              <UnsavedChangesNotifier />
-              <DocumentTitleHandler />
-            </Refine>
-            <DevtoolsPanel />
-          </DevtoolsProvider>
-        </ThemeProvider>
-      </RefineKbarProvider>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <RefineKbarProvider>
+                <ThemeProvider>
+                    <DevtoolsProvider>
+                        <Refine
+                            dataProvider={dataProvider}
+                            notificationProvider={useNotificationProvider()}
+                            routerProvider={routerProvider}
+                            options={{
+                                syncWithLocation: true,
+                                warnWhenUnsavedChanges: true,
+                                projectId: "UJpDoS-4wx89P-txwrBq",
+                            }}
+                            resources={[{
+                                name: 'Dashboard',
+                                list: '/',
+                                meta: {label: 'Home', icon: <Home/>}
+                            },
+                                {
+                                    name: 'subjects',
+                                    list: '/subjects',
+                                    create: '/subjects/create',
+                                    meta: {label: 'Subjects', icon: <BookOpenIcon/>}
+                                }
+                            ]}
+                        >
+                            <Routes>
+                                <Route element={
+                                    <Layout>
+                                        <Outlet/>
+                                    </Layout>
+                                }>
+                                    <Route path="/" element={<Dashboard/>}/>
+                                    <Route path='/subjects'>
+                                        <Route index element={<SubjectsList/>}/>
+                                        <Route path='create' element={<SubjectsCreate/>}/>
+                                    </Route>
+                                </Route>
+                            </Routes>
+                            <Toaster/>
+                            <RefineKbar/>
+                            <UnsavedChangesNotifier/>
+                            <DocumentTitleHandler/>
+                        </Refine>
+                        <DevtoolsPanel/>
+                    </DevtoolsProvider>
+                </ThemeProvider>
+            </RefineKbarProvider>
+        </BrowserRouter>
+    );
 }
 
 export default App;
