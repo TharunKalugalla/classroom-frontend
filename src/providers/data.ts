@@ -25,7 +25,8 @@ const options: CreateDataProviderOptions = {
         },
         mapResponse: async (response) => {
             try {
-                const payload = await response.json() as ListResponse<any>;
+                const payload = await response.clone().json() as ListResponse<any>;
+                ;
                 if (Array.isArray(payload)) return payload;
                 return payload?.data ?? [];
             } catch (error) {
@@ -36,7 +37,7 @@ const options: CreateDataProviderOptions = {
 
         getTotalCount: async (response) => {
             try {
-                const payload = await response.json() as ListResponse<any>;
+                const payload = await response.clone().json() as ListResponse<any>;
                 return payload?.pagination?.total ?? payload?.data?.length ?? (Array.isArray(payload) ? (payload as any).length : 0);
             } catch (error) {
                 console.error("Error getting total count:", error);
