@@ -14,6 +14,7 @@ const options: CreateDataProviderOptions = {
             filters?.forEach((filter) => {
                 const field = 'field' in filter ? filter.field : '';
                 const value = String(filter.value);
+                if (!filter.value) return;
 
                 if (resource === 'subjects') {
                     if (field === 'department') params.department = value;

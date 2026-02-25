@@ -3,10 +3,7 @@ export type Subject = {
     name: string;
     code: string;
     description: string;
-    department: {
-        id: number;
-        name: string;
-    };
+    department: Pick<Department, "id" | "name">;
     createdAt?: string;
 };
 
@@ -83,7 +80,7 @@ export type User = {
     role: UserRole;
     image?: string;
     imageCldPubId?: string;
-    department?: string;
+    department?: Department;
 };
 
 export type Schedule = {
